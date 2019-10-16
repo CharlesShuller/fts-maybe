@@ -1,0 +1,25 @@
+{
+    "name": "fts-maybe",
+    "version": "1.0.0",
+    "description": "A Maybe type to represent the return of functions that sometimes don't return a value.",
+    "main": "lib/Maybe.js",
+    "types": "lib/Maybe.d.ts",
+    "files": [
+        "lib/**/*"
+    ],
+    "scripts": {
+        "test": "node ./node_modules/jest/bin/jest.js --config jestconfig.json",
+        "build": "./node_modules/typescript/bin/tsc",
+        "doc": "./node_modules/typedoc/bin/typedoc ./src"
+    },
+    "author": "Charles Shuller",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/jest": "^24.0.18",
+        "jest": "^24.9.0",
+        "ts-jest": "^24.1.0",
+        "typedoc": "^0.15.0",
+        "typescript": "^3.6.4"
+    },
+    "dependencies": {}
+}
