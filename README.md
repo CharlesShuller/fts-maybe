@@ -11,7 +11,7 @@ Most of the examples below assume a "find" function is available that returns
 a maybe.  That function may be defined as:
 
 ```
-import * as Maybe from 'maybe';
+import * as Maybe from 'fts-maybe';
 
 function find(numArray: number[], val: number): Maybe.Maybe<number> {
     const foundNum = numArray.find( (element) => element === val );
