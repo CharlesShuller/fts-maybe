@@ -4,6 +4,10 @@
     "description": "A Maybe type to represent the return of functions that sometimes don't return a value.",
     "main": "lib/Maybe.js",
     "types": "lib/Maybe.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CharlesShuller/fts-maybe.git"
+    },
     "files": [
         "lib/**/*"
     ],
@@ -12,8 +16,11 @@
         "build": "./node_modules/typescript/bin/tsc",
         "doc": "./node_modules/typedoc/bin/typedoc ./src"
     },
-    "author": "Charles Shuller",
-    "license": "ISC",
+    "author": {
+        "name": "Charles Shuller",
+        "email": "charles.shuller@gmail.com"
+    },
+    "license": "LGPL-3.0-or-later",
     "devDependencies": {
         "@types/jest": "^24.0.18",
         "jest": "^24.9.0",
