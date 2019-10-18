@@ -166,3 +166,17 @@ export function bind<Vi, Vo>(maybe: Maybe<Vi>, bindFun: BindFunction<Vi, Vo>): M
         }
     }
 }
+
+
+export function unbox<Vi, Vo>(maybe: Maybe<Vi>,
+                              justCallback: (value: Vi) => Vo,
+                              nothingCallback: () => Vo): Vo {
+    switch(maybe.kind) {
+        case "Just": {
+            return justCallback(maybe.value);
+        }
+        case "Nothing": {
+            return nothingCallback();
+        }
+    }
+}
