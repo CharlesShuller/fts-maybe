@@ -1,9 +1,9 @@
 {
     "name": "fts-maybe",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "description": "A Maybe type to represent the return of functions that sometimes don't return a value.",
-    "main": "lib/Maybe.js",
-    "types": "lib/Maybe.d.ts",
+    "main": "lib/src/Maybe.js",
+    "types": "lib/src/Maybe.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/CharlesShuller/fts-maybe.git"
@@ -28,5 +28,8 @@
         "typedoc": "^0.15.0",
         "typescript": "^3.6.4"
     },
-    "dependencies": {}
+    "dependencies": {
+        "fts-functor": "^1.0.0",
+        "fts-monad": "^1.1.1"
+    }
 }

@@ -68,7 +68,7 @@ function monadicMaybe(): void {
     const maybeFound = find(someNumberArray, 12)
         .then( (val: number) => Maybe.Just(val + 32) )
         .then( (val: number) => find(someNumberArray, val) )
-        .then( (val: number) => Maybe.Just(val - 2) );
+        .then( (val: number) => Maybe.Just(val - 2) ) as Maybe.MaybeNumber;
 
     console.log( "monadicMaybe: " + Maybe.fromMaybe(maybeFound, 0) );
 }

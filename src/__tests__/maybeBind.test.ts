@@ -26,7 +26,7 @@ test("Binding Just with a func yeilds a Just", () => {
     const just12: MaybeNum = Maybe.bind( just5,
                                          (val: number) => {
                                              return Maybe.Just(val + 7)
-                                         });
+                                         }) as MaybeNum;
 
     switch(just12.kind) {
         case "Just": {
@@ -46,7 +46,7 @@ test("Binding Nothing with a func yields a Nothing", () => {
     const nothingRes: MaybeNum = Maybe.bind(nothing,
                                             (val: number) => {
                                                 return Maybe.Just(val + 7);
-                                            });
+                                            }) as MaybeNum;
 
     expect(nothingRes.kind).toBe("Nothing");
 });
@@ -58,7 +58,7 @@ test("Just.bind can be chained", () => {
         .bind( (val: number) => Maybe.Just(val + 1) )
         .bind( (val: number) => Maybe.Just(val + 1) )
         .bind( (val: number) => Maybe.Just(val + 1) )
-        .bind( (val: number) => Maybe.Just(val + 1) );
+        .bind( (val: number) => Maybe.Just(val + 1) ) as MaybeNum;
 
 
     switch(just5.kind) {
@@ -80,7 +80,7 @@ test("Nothing.bind can be chained", () => {
         .bind( (val: number) => Maybe.Nothing<number>() )
         .bind( (val: number) => Maybe.Nothing<number>() )
         .bind( (val: number) => Maybe.Nothing<number>() )
-        .bind( (val: number) => Maybe.Nothing<number>() );
+        .bind( (val: number) => Maybe.Nothing<number>() ) as MaybeNum;
 
     expect(nothingRes.kind).toBe("Nothing");
 });
@@ -93,7 +93,7 @@ test("Nothing.bind can be chained with Just.bind to yeild Nothing", () => {
         .bind( (val: number) => Maybe.Just(val + 1) )
         .bind( (val: number) => Maybe.Just(val + 1) )
         .bind( (val: number) => Maybe.Nothing<number>() )
-        .bind( (val: number) => Maybe.Just(val + 1) );
+        .bind( (val: number) => Maybe.Just(val + 1) ) as MaybeNum;
 
 
     expect(nothingRes.kind).toBe("Nothing");
@@ -107,7 +107,7 @@ test("Nothing.then can be chained with Just.bind to yeild Nothing", () => {
         .then( (val: number) => Maybe.Just(val + 1) )
         .then( (val: number) => Maybe.Just(val + 1) )
         .then( (val: number) => Maybe.Nothing<number>() )
-        .then( (val: number) => Maybe.Just(val + 1) );
+        .then( (val: number) => Maybe.Just(val + 1) ) as MaybeNum;
 
 
     expect(nothingRes.kind).toBe("Nothing");

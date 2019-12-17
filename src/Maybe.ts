@@ -21,6 +21,9 @@
  */
 
 
+import { Monad, BindFunction, SequenceFunction, defaultThen } from 'fts-monad';
+import { Functor, FmapFunction } from 'fts-functor';
+
 
 /**
  * Type used to define a Maybe.  A Maybe is a _Just or _Nothing, but
@@ -44,24 +47,8 @@ export type MaybeBoolean = Maybe<boolean>;
 export type MaybeBool = Maybe<boolean>;
 export type MaybeAny = Maybe<any>;
 export type MaybeSymbol = Maybe<symbol>;
+export type MaybeError = Maybe<Error>;
 
-
-/**
- * BindFunctions are used for "Binding" a function to a maybe, it's essentially
- * a form of function composition.  The terminology is borrowed from Haskell
- * where it is written as ">>=".
- *
- * Here, it is used to describe a function we pass to "bind" or "then"
- * functions.
- *
- * @typeparam Vi This is the input type, the type of the value of the maybe.
- * @typeparam Vo This is the output type, the type of the value of the
- *               resultant maybe.
- *
- * @param value This is the value of the maybe bind is called against.  Bind
- *              Functions are not called when the maybe is a Nothing.
- */
-export type BindFunction<Vi, Vo> = (value: Vi) => Maybe<Vo>;
 
 
 
@@ -71,16 +58,28 @@ export type BindFunction<Vi, Vo> = (value: Vi) => Maybe<Vo>;
  *
  * @typeparam V This is the type of the value of the Maybe.
  */
-class _Just<V> {
+class _Just<V> implements Monad<V> {
     readonly kind = "Just";
     constructor(readonly value: V) {}
 
-    bind<Vo>(bindFun: BindFunction<V, Vo>): Maybe<Vo> {
+    fmap<Vo>( fmapFunction: FmapFunction<V, Vo> ): Maybe<Vo> {
+        return Just( fmapFunction(this.value) );
+    }
+
+    bind<Vo>(bindFun: BindFunction<V, Vo>): Monad<Vo> {
         return bind(Just<V>(this.value), bindFun);
     }
 
-    then<Vo>(bindFun: BindFunction<V, Vo>): Maybe<Vo> {
-        return this.bind(bindFun);
+    seq<Vo>(sequenceFunction: SequenceFunction<Vo>): Monad<Vo>{
+        return sequenceFunction();
+    }
+
+
+    then<Vo>(
+        bindOrSequenceFunction: BindFunction<V, Vo>
+                              | SequenceFunction<Vo>
+    ): Monad<Vo> {
+        return defaultThen(this.value, bindOrSequenceFunction);
     }
 }
 
@@ -95,18 +94,34 @@ class _Just<V> {
  *              parameter to be passed.  I.e. Nothing<number>() instead of
  *              Nothing()
  */
-class _Nothing<V> {
+class _Nothing<V> implements Monad<V> {
     readonly kind = "Nothing";
     constructor() {}
 
-    bind<Vo>(bindFun: BindFunction<V, Vo>): Maybe<Vo> {
+    fmap<Vo>( fmapFunction: FmapFunction<V, Vo> ): Maybe<Vo> {
+        return Nothing<Vo>();
+    }
+
+
+    bind<Vo>(bindFun: BindFunction<V, Vo>): Monad<Vo> {
         return bind(Nothing<V>(), bindFun);
     }
 
-    then<Vo>(bindFun: BindFunction<V, Vo>): Maybe<Vo> {
-        return this.bind(bindFun);
+    seq<Vo>(sequenceFunction: SequenceFunction<Vo>): Monad<Vo>{
+        return sequenceFunction();
+    }
+
+
+    then<Vo>(
+        bindOrSequenceFunction: BindFunction<V, Vo>
+                              | SequenceFunction<Vo>
+    ): Monad<Vo> {
+        return bindOrSequenceFunction.length === 0 ?
+            this.seq(bindOrSequenceFunction as SequenceFunction<Vo>) :
+            this.bind(bindOrSequenceFunction as BindFunction<V, Vo>);
     }
 }
+
 
 export function Just<V>(value: V): Maybe<V> {
     return new _Just<V>(value);
@@ -156,7 +171,7 @@ export function fromMaybe<V>(maybe: Maybe<V>, defaultValue: V): V {
     }
 }
 
-export function bind<Vi, Vo>(maybe: Maybe<Vi>, bindFun: BindFunction<Vi, Vo>): Maybe<Vo> {
+export function bind<Vi, Vo>(maybe: Maybe<Vi>, bindFun: BindFunction<Vi, Vo>): Monad<Vo> {
     switch(maybe.kind) {
         case "Just": {
             return bindFun(maybe.value);

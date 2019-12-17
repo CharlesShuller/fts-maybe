@@ -85,7 +85,7 @@ const value0: number = Maybe.fromMaybe(nothing, 0);
 const numberOrString: number | string =
     Maybe.unbox<number, number | string>(nothing,
                                          (value: number) => value,
-                                         () => "Not a maybe")
+                                         () => "Maybe Was Nothing")
 
 
 
