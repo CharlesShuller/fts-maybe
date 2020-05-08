@@ -73,20 +73,20 @@ class _Just<V> implements Monad<V> {
         return Just( fmapFunction(this.value) );
     }
 
-    bind<Vo>(bindFun: BindFunction<V, Vo>): Monad<Vo> {
-        return bind(Just<V>(this.value), bindFun);
+    bind<Vo>(bindFun: BindFunction<V, Vo>): Maybe<Vo> {
+        return bind(Just<V>(this.value), bindFun) as Maybe<Vo>;
     }
 
-    seq<Vo>(sequenceFunction: SequenceFunction<Vo>): Monad<Vo>{
-        return sequenceFunction();
+    seq<Vo>(sequenceFunction: SequenceFunction<Vo>): Maybe<Vo>{
+        return sequenceFunction() as Maybe<Vo>;
     }
 
 
     then<Vo>(
         bindOrSequenceFunction: BindFunction<V, Vo>
                               | SequenceFunction<Vo>
-    ): Monad<Vo> {
-        return defaultThen(this.value, bindOrSequenceFunction);
+    ): Maybe<Vo> {
+        return defaultThen(this.value, bindOrSequenceFunction) as Maybe<Vo>;
     }
 
     match<Vo>(
@@ -117,19 +117,19 @@ class _Nothing<V> implements Monad<V> {
     }
 
 
-    bind<Vo>(bindFun: BindFunction<V, Vo>): Monad<Vo> {
-        return bind(Nothing<V>(), bindFun);
+    bind<Vo>(bindFun: BindFunction<V, Vo>): Maybe<Vo> {
+        return bind(Nothing<V>(), bindFun) as Maybe<Vo>;
     }
 
-    seq<Vo>(sequenceFunction: SequenceFunction<Vo>): Monad<Vo>{
-        return sequenceFunction();
+    seq<Vo>(sequenceFunction: SequenceFunction<Vo>): Maybe<Vo>{
+        return sequenceFunction() as Maybe<Vo>;
     }
 
 
     then<Vo>(
         bindOrSequenceFunction: BindFunction<V, Vo>
                               | SequenceFunction<Vo>
-    ): Monad<Vo> {
+    ): Maybe<Vo> {
         return bindOrSequenceFunction.length === 0 ?
             this.seq(bindOrSequenceFunction as SequenceFunction<Vo>) :
             this.bind(bindOrSequenceFunction as BindFunction<V, Vo>);
