@@ -1,6 +1,6 @@
 {
     "name": "fts-maybe",
-    "version": "2.0.1",
+    "version": "2.1.0",
     "description": "A Maybe type to represent the return of functions that sometimes don't return a value.",
     "main": "lib/src/Maybe.js",
     "types": "lib/src/Maybe.d.ts",

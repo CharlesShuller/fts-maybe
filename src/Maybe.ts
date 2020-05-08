@@ -49,6 +49,13 @@ export type MaybeAny = Maybe<any>;
 export type MaybeSymbol = Maybe<symbol>;
 export type MaybeError = Maybe<Error>;
 
+export interface JustMatchFunction<Vi, Vo> {
+    (value: Vi): Vo;
+}
+
+export interface NothingMatchFunction<Vi, Vo> {
+    (): Vo;
+}
 
 
 
@@ -80,6 +87,13 @@ class _Just<V> implements Monad<V> {
                               | SequenceFunction<Vo>
     ): Monad<Vo> {
         return defaultThen(this.value, bindOrSequenceFunction);
+    }
+
+    match<Vo>(
+        justMatchFunction: JustMatchFunction<V, Vo>,
+        nothingMatchFunction: NothingMatchFunction<V, Vo>
+    ): Vo {
+        return justMatchFunction(this.value);
     }
 }
 
@@ -119,6 +133,13 @@ class _Nothing<V> implements Monad<V> {
         return bindOrSequenceFunction.length === 0 ?
             this.seq(bindOrSequenceFunction as SequenceFunction<Vo>) :
             this.bind(bindOrSequenceFunction as BindFunction<V, Vo>);
+    }
+
+    match<Vo>(
+        justMatchFunction: JustMatchFunction<V, Vo>,
+        nothingMatchFunction: NothingMatchFunction<V, Vo>
+    ): Vo {
+        return nothingMatchFunction();
     }
 }
 
@@ -184,8 +205,8 @@ export function bind<Vi, Vo>(maybe: Maybe<Vi>, bindFun: BindFunction<Vi, Vo>): M
 
 
 export function unbox<Vi, Vo>(maybe: Maybe<Vi>,
-                              justCallback: (value: Vi) => Vo,
-                              nothingCallback: () => Vo): Vo {
+                              justCallback: JustMatchFunction<Vi, Vo>,
+                              nothingCallback: NothingMatchFunction<Vi, Vo>): Vo {
     switch(maybe.kind) {
         case "Just": {
             return justCallback(maybe.value);
